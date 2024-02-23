@@ -57,6 +57,3 @@ function token(){
     return $access_token;
 
 }
-
-?>
-

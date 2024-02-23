@@ -121,5 +121,3 @@ echo $resultado_final_encodeado;
 // Cerrar conexión
 $stmt->close();
 $conn->close();
-?>
-

@@ -49,6 +49,3 @@ function top3($access_token){
     return $response2_decoded;
 
 }
-
-?>
-

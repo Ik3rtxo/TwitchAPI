@@ -92,6 +92,3 @@ function videos($access_token, $juego){
     return $result[0];
 
 }
-
-?>
-
