@@ -9,9 +9,9 @@ $client_secret = 've1fjp9t5n3eygo0vu6igoxg6mj0i6';
 
 // Datos para enviar en la solicitud POST
 $post_data = array(
-'client_id' => $client_id,
-'client_secret' => $client_secret,
-'grant_type' => 'client_credentials'
+    'client_id' => $client_id,
+    'client_secret' => $client_secret,
+    'grant_type' => 'client_credentials'
 );
 
 // Inicializar cURL para la primera consulta
@@ -31,7 +31,7 @@ curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
 
 // Establecer encabezados
 curl_setopt($ch1, CURLOPT_HTTPHEADER, array(
-'Content-Type: application/x-www-form-urlencoded'
+    'Content-Type: application/x-www-form-urlencoded'
 ));
 
 // Ejecutar la primera solicitud y obtener la respuesta
@@ -65,8 +65,8 @@ curl_setopt($ch2, CURLOPT_HTTPGET, true);
 
 // Establecer encabezados para la segunda solicitud
 curl_setopt($ch2, CURLOPT_HTTPHEADER, array(
-'Authorization: ' . 'Bearer ' . $access_token,
-'Client-Id: ' . $client_id
+    'Authorization: ' . 'Bearer ' . $access_token,
+    'Client-Id: ' . $client_id
 ));
 
 // Indicar que queremos recibir una respuesta
@@ -96,7 +96,7 @@ $response2_decoded['data'] = array_slice($response2_decoded['data'], 0, 3);
 header("Content-Type: application/json");
 
 // Convertir el array de resultados a JSON y mostrarlo
-$response2_encoded = json_encode($response2_decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE); 
+$response2_encoded = json_encode($response2_decoded, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
 //echo $response2_encoded;
 
@@ -105,9 +105,9 @@ $final_result = array(); // Crear un array vacío
 $ch3 = curl_init();
 
 foreach ($response2_decoded['data'] as $juego) {
-    
+
     $url3 = "https://api.twitch.tv/helix/videos?game_id=" . urlencode($juego['id']) . "&sort=views&first=40";
-    
+
     // Configurar la URL de la segunda solicitud
     curl_setopt($ch3, CURLOPT_URL, $url3);
 
@@ -116,8 +116,8 @@ foreach ($response2_decoded['data'] as $juego) {
 
     // Establecer encabezados para la segunda solicitud
     curl_setopt($ch3, CURLOPT_HTTPHEADER, array(
-    'Authorization: ' . 'Bearer ' . $access_token,
-    'Client-Id: ' . $client_id
+        'Authorization: ' . 'Bearer ' . $access_token,
+        'Client-Id: ' . $client_id
     ));
 
     // Indicar que queremos recibir una respuesta
@@ -142,7 +142,7 @@ foreach ($response2_decoded['data'] as $juego) {
         $videodata['game_id'] = $juego['id']; // Asigna un ID de juego aleatorio
         $videodata['game_name'] = $juego['name']; // Asigna un nombre de juego ficticio
     }
-    
+
     $data = $response3_decoded;
 
     // Array para almacenar la información requerida
