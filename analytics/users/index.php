@@ -28,9 +28,9 @@ $stmt->execute();
 $result = $stmt->get_result();
 if($result->num_rows>0){
 	//echo "llegue donde tenia que llegar";
-	/*header("Content-Type: application/json");
+	header("Content-Type: application/json");
 	$respuesta = json_encode($result->fetch_assoc(), JSON_PRETTY_PRINT);
-	echo $respuesta;*/
+	echo $respuesta;
 }else{
 	echo "El usuario con id: ".$id." no esta en la BD";
 	echo "<br> Trabajo de Iker";
