@@ -85,7 +85,9 @@ if($result->num_rows <= 0){		//Usuario no existe en la BDD
 
 	echo json_encode($datos_usuario);
 }else{
-	echo "usuario existe";
+	header("Content-Type: application/json");
+	$respuesta = json_encode($result->fetch_assoc(), JSON_PRETTY_PRINT);
+	echo $respuesta;
 }
 $conn.close();
 
