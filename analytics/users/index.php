@@ -19,6 +19,13 @@ $conn = new mysqli($host_name, $user_name, $password, $database);
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
+
+$id = $_GET['id'];
+$sql = "SELECT * FROM users WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s",$id);
+$stmt->execute();
+$result = $stmt->get_result();
 if($result->num_rows>0){
 	//echo "llegue donde tenia que llegar";
 	/*header("Content-Type: application/json");
