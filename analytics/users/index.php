@@ -21,6 +21,8 @@ $stmt = $conn->prepare($sql);
 $id = $_GET['id'];
 
 
+
+
 $access_token = token();
 // Inicializar cURL para la segunda consulta
 $ch2 = curl_init();
@@ -70,11 +72,18 @@ if($result->num_rows <= 0){		//Usuario no existe en la BDD
 	$datos_usuario = json_decode(consultaUsuario($id, $access_token), true);
 
 	$datos_usuario = $datos_usuario['data'][0];
+
+	
+	/*foreach($datos_usuario as $dato){
+		echo "dato";
+		echo json_encode($dato['login']);
+	}*/
 	
 	$stmt2->bind_param("ssssssssis", $datos_usuario['id'], $datos_usuario['login'], $datos_usuario['display_name'], $datos_usuario['type'], $datos_usuario['broadcaster_type'], $datos_usuario['description'], $datos_usuario['profile_image_url'], $datos_usuario['offline_image_url'], $datos_usuario['view_count'], $datos_usuario['created_at']);
 	$stmt2->execute();
 	$stmt2->close();
-	echo "Usuario no encontrado (insertado) en la BDD."
+
+	echo json_encode($datos_usuario);
 }else{
 	echo "usuario existe";
 }
@@ -114,9 +123,9 @@ function consultaUsuario($id, $access_token){
 	// Cerrar la conexión cURL de la segunda solicitud
 	curl_close($ch2);
 
+
 	header("Content-Type: application/json");
 	$response2_encoded = json_encode($response2_decoded, JSON_PRETTY_PRINT);
-
 	return $response2_encoded;
 
 }
