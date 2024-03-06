@@ -11,7 +11,7 @@ grumphp:
       max_body_width: 100
       max_subject_width: 100
       matchers:
-        Must start with issue number pattern: '/^\[\d+\].*$/'
+        Must contain issue number with specific pattern: '/^\[\d+\]\s[A-Z].*$/'
       case_insensitive: true
       multiline: true
       additional_modifiers: ''
