@@ -1,9 +1,27 @@
 <?php
 
-function token(){
+function token()
+{
 
-    //Parametro que indica cada cuanto se actualiza la informacion
-    //$time = $_GET['since'];
+    // Conexión a la base de datos (asumiendo que ya tienes los detalles de conexión configurados)
+    $host_name = 'db5015402108.hosting-data.io';
+    $database = 'dbs12614573';
+    $user_name = 'dbu5199925';
+    $password = 'Pce@6ooAdH';
+
+    // Crear conexión
+    $conn = new mysqli($host_name, $user_name, $password, $database);
+
+    $stmt = $conn->prepare("SELECT * FROM tokens");
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+
+    //Caso en el que si hay un token guardado
+    if ($result->num_rows > 0) {
+        $linea = $result->fetch_assoc();
+        return $linea['token'];
+    }
 
     // Datos de autenticación
     $client_id = 'f1uk5seih48k4fodvx7dy5mx2obo46';
@@ -11,9 +29,9 @@ function token(){
 
     // Datos para enviar en la solicitud POST
     $post_data = array(
-    'client_id' => $client_id,
-    'client_secret' => $client_secret,
-    'grant_type' => 'client_credentials'
+        'client_id' => $client_id,
+        'client_secret' => $client_secret,
+        'grant_type' => 'client_credentials'
     );
 
     // Inicializar cURL para la primera consulta
@@ -32,15 +50,19 @@ function token(){
     curl_setopt($ch1, CURLOPT_RETURNTRANSFER, true);
 
     // Establecer encabezados
-    curl_setopt($ch1, CURLOPT_HTTPHEADER, array(
-    'Content-Type: application/x-www-form-urlencoded'
-    ));
+    curl_setopt(
+        $ch1,
+        CURLOPT_HTTPHEADER,
+        array(
+        'Content-Type: application/x-www-form-urlencoded'
+        )
+    );
 
     // Ejecutar la primera solicitud y obtener la respuesta
     $response1 = curl_exec($ch1);
 
     // Verificar si hay errores en la primera solicitud
-    if(curl_errno($ch1)){
+    if (curl_errno($ch1)) {
         echo 'Error: ' . curl_error($ch1);
     }
 
@@ -52,8 +74,17 @@ function token(){
 
     // Extraer el token de acceso de la primera respuesta
     $access_token = $response_data1['access_token'];
-    //$token_type = $response_data1['token_type'];
+
+
+
+
+
+    $stmt2 = $conn->prepare("insert into tokens (user_id, token) values (?,?)");
+    $stmt2->bind_param("ss", $client_id, $access_token);
+    $stmt2->execute();
+
+
+
 
     return $access_token;
-
 }
