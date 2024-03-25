@@ -62,7 +62,8 @@ function videos($access_token, $juego)
                 'most_viewed_duration' => $duration,
                 'most_viewed_created_at' => $created_at
             );
-        } else {
+        }
+        if (isset($result[$user_name])) {
             $result[$user_name]['total_videos']++;
             $result[$user_name]['total_views'] += $view_count;
             if ($view_count > $result[$user_name]['most_viewed_views']) {

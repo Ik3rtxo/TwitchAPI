@@ -1,6 +1,6 @@
 <?php
 
-require_once '../topsofthetops/token.php';
+require '../topsofthetops/token.php';
 
 $host_name = 'db5015402108.hosting-data.io';
 $database = 'dbs12614573';
@@ -15,55 +15,41 @@ if ($conn->connect_error) {
     echo "bdd muere";
 }
 
-$sql = "SELECT * FROM users WHERE user_id = ?;";
-$stmt = $conn->prepare($sql);
 $id_usuario = $_GET['id'];
-
 $access_token = token();
-
-$ch2 = curl_init();
-
-$url = "https://api.twitch.tv/helix/users?id=" . urlencode($id_usuario);
-
-curl_setopt($ch2, CURLOPT_URL, $url);
-
-curl_setopt(
-    $ch2,
-    CURLOPT_HTTPHEADER,
-    array(
-    'Authorization: ' . 'Bearer ' . $access_token,
-    'Client-Id: ' . $client_id
-    )
-);
-
-curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-
-$response2 = curl_exec($ch2);
-
-if (curl_errno($ch2)) {
-    echo 'Error: ' . curl_error($ch2);
-}
-
-$response2_decoded = json_decode($response2, true);
-
-curl_close($ch2);
-
-$datos_usuario = json_encode($response2_decoded, JSON_PRETTY_PRINT);
 
 $test_usuario = "SELECT * FROM users WHERE id = ?";
 $stmt = $conn->prepare($test_usuario);
 $stmt->bind_param("s", $id_usuario);
 $stmt->execute();
 $result = $stmt->get_result();
-$stmt->close();
 
 if ($result->num_rows <= 0) {
     $nuevo_usuario = "INSERT INTO users (id, login, display_name, type, 
     broadcaster_type, description, profile_image_url, offline_image_url, view_count, created_at) 
 	VALUES (?,?,?,?,?,?,?,?,?,?);";
     $stmt2 = $conn->prepare($nuevo_usuario);
-    $datos_usuario = json_decode(consultaUsuario($id_usuario, $access_token), true);
-    $datos_usuario = $datos_usuario['data'][0];
+
+    $ch2 = curl_init();
+    $url = "https://api.twitch.tv/helix/users?id=" . urlencode($id_usuario);
+    curl_setopt($ch2, CURLOPT_URL, $url);
+    curl_setopt(
+        $ch2,
+        CURLOPT_HTTPHEADER,
+        array(
+        'Authorization: ' . 'Bearer ' . $access_token,
+        'Client-Id: ' . $client_id
+        )
+    );
+    curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
+    $response2 = curl_exec($ch2);
+    if (curl_errno($ch2)) {
+        echo 'Error: ' . curl_error($ch2);
+    }
+    curl_close($ch2);
+    $response2_decoded = json_decode($response2, true);
+    $datos_usuario = $response2_decoded['data'][0];
+
     $stmt2->bind_param(
         "ssssssssis",
         $datos_usuario['id'],
@@ -85,41 +71,4 @@ if ($result->num_rows <= 0) {
     $respuesta = json_encode($result->fetch_assoc(), JSON_PRETTY_PRINT);
     echo $respuesta;
 }
-$conn . close();
-
-function consultaUsuario($id_usuario, $access_token)
-{
-    $client_id = 'f1uk5seih48k4fodvx7dy5mx2obo46';
-
-    $ch2 = curl_init();
-
-    $url = "https://api.twitch.tv/helix/users?id=" . urlencode($id_usuario);
-
-    curl_setopt($ch2, CURLOPT_URL, $url);
-
-    curl_setopt(
-        $ch2,
-        CURLOPT_HTTPHEADER,
-        array(
-        'Authorization: ' . 'Bearer ' . $access_token,
-        'Client-Id: ' . $client_id
-        )
-    );
-
-    curl_setopt($ch2, CURLOPT_RETURNTRANSFER, true);
-
-    $response2 = curl_exec($ch2);
-
-    if (curl_errno($ch2)) {
-        echo 'Error: ' . curl_error($ch2);
-    }
-
-    $response2_decoded = json_decode($response2, true);
-
-    curl_close($ch2);
-
-    header("Content-Type: application/json");
-    $response2_encoded = json_encode($response2_decoded, JSON_PRETTY_PRINT);
-
-    return $response2_encoded;
-}
+$conn->close();

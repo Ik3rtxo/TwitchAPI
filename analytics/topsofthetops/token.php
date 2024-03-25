@@ -1,5 +1,7 @@
 <?php
 
+use mysqli;
+
 function token()
 {
 
